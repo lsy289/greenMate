@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String      @id @default(cuid())
+  email        String      @unique
+  nickname     String
+  password     String?
+  profileImage String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  rounds     Round[]
+  userBadges UserBadge[]
+  userLevel  UserLevel?
+}
+
+model Round {
+  id         String   @id @default(cuid())
+  userId     String
+  date       DateTime
+  courseName String
+  weather    String   // sunny | cloudy | rainy | snowy | windy
+  score      Int
+  memo       String?
+  photos     String?  // JSON array of image URLs
+  shareToken String?  @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Badge {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String
+  icon        String
+  condition   String
+
+  userBadges UserBadge[]
+}
+
+model UserBadge {
+  id       String   @id @default(cuid())
+  userId   String
+  badgeId  String
+  earnedAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id])
+
+  @@unique([userId, badgeId])
+}
+
+model UserLevel {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  currentLevel Int      @default(1)
+  bestScore    Int      @default(999)
+  totalRounds  Int      @default(0)
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
