@@ -16,31 +16,30 @@ export async function GET(req: NextRequest) {
   const query = req.nextUrl.searchParams.get('query')?.trim();
   if (!query || query.length < 2) return NextResponse.json({ items: [] });
 
-  const clientId = process.env.NAVER_SEARCH_CLIENT_ID;
-  const clientSecret = process.env.NAVER_SEARCH_CLIENT_SECRET;
+  const apiKey = process.env.KAKAO_REST_API_KEY;
+  if (!apiKey) return NextResponse.json({ items: [] });
 
-  if (!clientId || !clientSecret) {
-    return NextResponse.json({ items: [] });
-  }
-
-  const url = `https://openapi.naver.com/v1/search/local.json?query=${encodeURIComponent(query + ' 골프')}&display=5&sort=comment`;
+  const url = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(query + ' 골프')}&size=5`;
 
   const res = await fetch(url, {
-    headers: {
-      'X-Naver-Client-Id': clientId,
-      'X-Naver-Client-Secret': clientSecret,
-    },
+    headers: { Authorization: `KakaoAK ${apiKey}` },
   });
 
   if (!res.ok) return NextResponse.json({ items: [] });
 
   const data = await res.json();
-  const items: PlaceItem[] = (data.items ?? []).map((item: PlaceItem) => ({
-    title: item.title.replace(/<[^>]+>/g, ''),
-    address: item.address,
-    roadAddress: item.roadAddress,
-    mapx: item.mapx,
-    mapy: item.mapy,
+  const items: PlaceItem[] = (data.documents ?? []).map((doc: {
+    place_name: string;
+    address_name: string;
+    road_address_name: string;
+    x: string;
+    y: string;
+  }) => ({
+    title: doc.place_name,
+    address: doc.address_name,
+    roadAddress: doc.road_address_name || doc.address_name,
+    mapx: doc.x,
+    mapy: doc.y,
   }));
 
   return NextResponse.json({ items });
