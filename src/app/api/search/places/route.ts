@@ -1,14 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 
-export interface PlaceItem {
-  title: string;
-  address: string;
-  roadAddress: string;
-  mapx: string;
-  mapy: string;
-}
-
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -28,7 +20,7 @@ export async function GET(req: NextRequest) {
   if (!res.ok) return NextResponse.json({ items: [] });
 
   const data = await res.json();
-  const items: PlaceItem[] = (data.documents ?? []).map((doc: {
+  const items = (data.documents ?? []).map((doc: {
     place_name: string;
     address_name: string;
     road_address_name: string;

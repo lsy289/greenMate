@@ -2,7 +2,14 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { MapPin, Loader2 } from 'lucide-react';
-import type { PlaceItem } from '@/app/api/search/places/route';
+
+interface PlaceItem {
+  title: string;
+  address: string;
+  roadAddress: string;
+  mapx: string;
+  mapy: string;
+}
 
 interface Props {
   value: string;
