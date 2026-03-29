@@ -33,8 +33,9 @@ model Round {
   weather    String   // sunny | cloudy | rainy | snowy | windy
   score      Int
   memo       String?
-  photos     String?  // JSON array of image URLs
-  shareToken String?  @unique
+  photos        String?  // JSON array of image URLs
+  courseAddress String?  // 네이버 검색 결과 도로명주소
+  shareToken    String?  @unique
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 

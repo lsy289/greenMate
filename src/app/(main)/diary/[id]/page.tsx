@@ -2,7 +2,7 @@
 
 import { use, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Pencil, Trash2, ChevronLeft, ChevronRight, Share2 } from 'lucide-react';
+import { ArrowLeft, Pencil, Trash2, ChevronLeft, ChevronRight, Share2, MapPin } from 'lucide-react';
 import ScoreBadge from '@/components/ui/ScoreBadge';
 import Button from '@/components/ui/Button';
 import { WEATHER_OPTIONS } from '@/lib/constants';
@@ -114,6 +114,17 @@ export default function RoundDetailPage({ params }: { params: Promise<{ id: stri
               <span>·</span>
               <span>{weather?.icon} {weather?.label}</span>
             </div>
+            {round.courseAddress && (
+              <a
+                href={`https://map.naver.com/v5/search/${encodeURIComponent(round.courseName)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 mt-1.5 text-xs text-[var(--primary-500)] hover:underline"
+              >
+                <MapPin size={11} />
+                {round.courseAddress}
+              </a>
+            )}
           </div>
           <ScoreBadge score={round.score} size="lg" />
         </div>

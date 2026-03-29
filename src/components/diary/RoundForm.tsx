@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import PhotoUploader from './PhotoUploader';
+import CourseSearchInput from './CourseSearchInput';
 import { WEATHER_OPTIONS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import type { Round, RoundFormData, WeatherType } from '@/types';
@@ -24,6 +25,7 @@ export default function RoundForm({ initialData, onSubmit }: RoundFormProps) {
     initialData ? initialData.date.toISOString().split('T')[0] : today
   );
   const [courseName, setCourseName] = useState(initialData?.courseName ?? '');
+  const [courseAddress, setCourseAddress] = useState(initialData?.courseAddress ?? '');
   const [weather, setWeather] = useState<WeatherType>(initialData?.weather ?? 'sunny');
   const [score, setScore] = useState(initialData?.score?.toString() ?? '');
   const [memo, setMemo] = useState(initialData?.memo ?? '');
@@ -44,6 +46,7 @@ export default function RoundForm({ initialData, onSubmit }: RoundFormProps) {
       await onSubmit({
         date: new Date(date),
         courseName: courseName.trim(),
+        courseAddress: courseAddress || undefined,
         weather,
         score: scoreNum,
         memo: memo.trim() || undefined,
@@ -73,13 +76,11 @@ export default function RoundForm({ initialData, onSubmit }: RoundFormProps) {
       {/* 골프장 이름 */}
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-medium text-[var(--gray-900)]">골프장</label>
-        <input
-          type="text"
-          placeholder="골프장 이름을 입력하세요"
+        <CourseSearchInput
           value={courseName}
-          onChange={(e) => setCourseName(e.target.value)}
-          className="h-12 px-4 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] bg-white"
-          required
+          onChange={(v) => { setCourseName(v); if (!v) setCourseAddress(''); }}
+          onSelect={(name, address) => { setCourseName(name); setCourseAddress(address); }}
+          className="h-12 px-4 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--primary-500)] bg-white w-full"
         />
       </div>
 

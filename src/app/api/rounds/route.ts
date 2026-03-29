@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const userId = session.user.id;
 
-  const { date, courseName, weather, score, memo, photos } = await req.json();
+  const { date, courseName, courseAddress, weather, score, memo, photos } = await req.json();
 
   if (!date || !courseName || !weather || score == null)
     return NextResponse.json({ error: '필수 항목이 누락되었습니다.' }, { status: 400 });
@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
       userId,
       date: new Date(date),
       courseName,
+      courseAddress: courseAddress ?? null,
       weather,
       score,
       memo: memo ?? null,

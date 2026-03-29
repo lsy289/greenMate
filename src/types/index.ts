@@ -14,6 +14,7 @@ export interface Round {
   userId: string;
   date: Date;
   courseName: string;
+  courseAddress?: string;
   weather: WeatherType;
   score: number;
   memo?: string;
@@ -68,6 +69,7 @@ export type ScoreBadgeColor = 'green' | 'blue' | 'red';
 export interface RoundFormData {
   date: Date;
   courseName: string;
+  courseAddress?: string;
   weather: WeatherType;
   score: number;
   memo?: string;

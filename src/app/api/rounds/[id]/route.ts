@@ -36,7 +36,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   if (!existing || existing.userId !== userId)
     return NextResponse.json({ error: '라운딩을 찾을 수 없습니다.' }, { status: 404 });
 
-  const { date, courseName, weather, score, memo, photos } = await req.json();
+  const { date, courseName, courseAddress, weather, score, memo, photos } = await req.json();
 
   if (weather && !WEATHER_VALUES.includes(weather))
     return NextResponse.json({ error: '유효하지 않은 날씨 값입니다.' }, { status: 400 });
@@ -48,6 +48,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     data: {
       ...(date && { date: new Date(date) }),
       ...(courseName && { courseName }),
+      ...(courseAddress !== undefined && { courseAddress: courseAddress || null }),
       ...(weather && { weather }),
       ...(score != null && { score }),
       ...(memo !== undefined && { memo }),
